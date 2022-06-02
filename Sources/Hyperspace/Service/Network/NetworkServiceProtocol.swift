@@ -31,10 +31,13 @@ public enum NetworkServiceError: Error, Equatable {
 public struct NetworkServiceSuccess: Equatable {
     public let data: Data
     public let response: HTTP.Response
-    
-    public init(data: Data, response: HTTP.Response) {
+    // TODO: - CHANGED
+    public let urlResponse: URLResponse?
+
+    public init(data: Data, response: HTTP.Response, urlResponse: URLResponse? = nil) {
         self.data = data
         self.response = response
+        self.urlResponse = urlResponse
     }
 }
 
@@ -42,10 +45,13 @@ public struct NetworkServiceSuccess: Equatable {
 public struct NetworkServiceFailure: Error, Equatable {
     public let error: NetworkServiceError
     public let response: HTTP.Response?
-    
-    public init(error: NetworkServiceError, response: HTTP.Response?) {
+    // TODO: - CHANGED
+    public let urlResponse: URLResponse?
+
+    public init(error: NetworkServiceError, response: HTTP.Response?, urlResponse: URLResponse? = nil) {
         self.error = error
         self.response = response
+        self.urlResponse = urlResponse
     }
 }
 
@@ -57,14 +63,14 @@ public typealias NetworkServiceCompletion = (NetworkServiceResult) -> Void
 
 /// Represents something that can execute a URLRequest.
 public protocol NetworkServiceProtocol {
-    
+
     /// Executes the URLRequest, calling the provided completion block when complete.
     ///
     /// - Parameters:
     ///   - request: The URLRequest to execute.
     ///   - completion: The completion block to be invoked when request execution is complete.
     func execute(request: URLRequest, completion: @escaping NetworkServiceCompletion)
-    
+
     /// Cancels the task for the given request (if it is currently running).
     func cancelTask(for request: URLRequest)
 
